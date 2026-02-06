@@ -52,6 +52,37 @@
             height: 100%;
             border: none;
         }
+        
+        /* 侧边栏折叠相关样式 */
+        .layui-side-shrink .layui-side {
+            width: 60px;
+        }
+        .layui-side-shrink .layui-side .layui-nav-tree .layui-nav-item > a > span,
+        .layui-side-shrink .layui-side .layui-nav-tree .layui-nav-child {
+            display: none;
+        }
+        .layui-side-shrink .layui-body {
+            left: 60px;
+        }
+        .layui-side-shrink .layui-footer {
+            left: 60px;
+        }
+        .layui-side-shrink .layui-side .layui-nav-item a .layui-icon {
+            font-size: 18px;
+            margin-right: 0;
+        }
+        
+        /* 折叠按钮样式 */
+        .sidebar-toggle {
+            display: inline-block;
+            padding: 0 15px;
+            cursor: pointer;
+            color: #fff;
+            line-height: 60px;
+        }
+        .sidebar-toggle:hover {
+            background-color: rgba(255,255,255,.05);
+        }
     </style>
 </head>
 <body class="layui-layout-body">
@@ -59,6 +90,9 @@
         <!-- 头部 -->
         <div class="layui-header">
             <div class="layui-logo">仓库管理系统</div>
+            <a class="sidebar-toggle" onclick="toggleSidebar()">
+                <i class="layui-icon layui-icon-shrink-right" id="toggleIcon"></i>
+            </a>
             <ul class="layui-nav layui-layout-right">
                 <li class="layui-nav-item">
                     <a href="javascript:;">
@@ -81,7 +115,7 @@
                         {% if menu.children %}
                         <a href="javascript:;">
                             <i class="layui-icon layui-icon-app"></i>
-                            {{ menu.name }}
+                            <span>{{ menu.name }}</span>
                         </a>
                         <dl class="layui-nav-child">
                             {% for child in menu.children %}
@@ -95,7 +129,7 @@
                         {% else %}
                         <a href="javascript:;" onclick="addTab('{{ menu.name }}', '{{ menu.route }}')">
                             <i class="layui-icon layui-icon-app"></i>
-                            {{ menu.name }}
+                            <span>{{ menu.name }}</span>
                         </a>
                         {% endif %}
                     </li>
@@ -183,6 +217,20 @@
                 window.location.href = '/logout/';
                 layui.layer.close(index);
             });
+        }
+        
+        // 切换侧边栏折叠状态
+        function toggleSidebar() {
+            var layout = document.querySelector('.layui-layout');
+            var icon = document.getElementById('toggleIcon');
+            
+            if (layout.classList.contains('layui-side-shrink')) {
+                layout.classList.remove('layui-side-shrink');
+                icon.className = 'layui-icon layui-icon-shrink-right';
+            } else {
+                layout.classList.add('layui-side-shrink');
+                icon.className = 'layui-icon layui-icon-spread-left';
+            }
         }
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
