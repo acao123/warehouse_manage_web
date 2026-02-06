@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仓库管理系统 - 主工作台</title>
+    <link rel="stylesheet" href="/static/layui/layui/css/layui.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .layui-layout-admin .layui-header {
+            background-color: #23262E;
+        }
+        .layui-layout-admin .layui-side {
+            background-color: #2F3542;
+        }
+        .layui-layout-admin .layui-side .layui-nav {
+            background-color: #2F3542;
+        }
+        .layui-logo {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .layui-nav-tree .layui-nav-item a {
+            color: #fff;
+        }
+        .layui-nav-tree .layui-nav-child dd.layui-this, 
+        .layui-nav-tree .layui-nav-child dd.layui-this a, 
+        .layui-nav-tree .layui-this, 
+        .layui-nav-tree .layui-this>a {
+            background-color: #009688 !important;
+        }
+        .layui-tab-title li {
+            position: relative;
+            padding-right: 40px !important;
+        }
+        .layui-tab-title .layui-tab-close {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        .layui-tab-title .layui-tab-close:hover {
+            color: #ff5722;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <!-- 头部 -->
+        <div class="layui-header">
+            <div class="layui-logo">仓库管理系统</div>
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <i class="layui-icon layui-icon-username"></i>
+                        {{ user.nickname }}
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" onclick="logout()">退出登录</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- 侧边栏 -->
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <ul class="layui-nav layui-nav-tree" lay-filter="sidebar">
+                    {% for menu in menus %}
+                    <li class="layui-nav-item">
+                        {% if menu.children %}
+                        <a href="javascript:;">
+                            <i class="layui-icon layui-icon-app"></i>
+                            {{ menu.name }}
+                        </a>
+                        <dl class="layui-nav-child">
+                            {% for child in menu.children %}
+                            <dd>
+                                <a href="javascript:;" onclick="addTab('{{ child.name }}', '{{ child.route }}')">
+                                    {{ child.name }}
+                                </a>
+                            </dd>
+                            {% endfor %}
+                        </dl>
+                        {% else %}
+                        <a href="javascript:;" onclick="addTab('{{ menu.name }}', '{{ menu.route }}')">
+                            <i class="layui-icon layui-icon-app"></i>
+                            {{ menu.name }}
+                        </a>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 内容主体 -->
+        <div class="layui-body">
+            <div class="layui-tab layui-tab-card" lay-filter="bodyTab" lay-allowclose="true">
+                <ul class="layui-tab-title">
+                    <li class="layui-this" lay-id="home">首页</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <div style="padding: 20px;">
+                            <blockquote class="layui-elem-quote">
+                                欢迎使用仓库管理系统！
+                            </blockquote>
+                            <fieldset class="layui-elem-field layui-field-title">
+                                <legend>系统信息</legend>
+                            </fieldset>
+                            <div class="layui-row layui-col-space15">
+                                <div class="layui-col-md3">
+                                    <div style="padding: 20px; background: #fff; border-radius: 4px; box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);">
+                                        <p>当前用户：<strong>{{ user.nickname }}</strong></p>
+                                        <p>用户名：{{ user.username }}</p>
+                                        <p>部门：{{ user.department }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/layui/layui/layui.js"></script>
+    <script>
+        layui.use(['element', 'layer'], function(){
+            var element = layui.element;
+            var layer = layui.layer;
+            
+            // 监听Tab切换
+            element.on('tab(bodyTab)', function(data){
+                console.log('切换到Tab', data.index);
+            });
+        });
+        
+        // 添加Tab页
+        function addTab(title, url) {
+            var element = layui.element;
+            var tabId = 'tab_' + new Date().getTime();
+            
+            // 检查是否已经打开
+            var isActive = false;
+            $('.layui-tab-title li').each(function(){
+                if($(this).attr('lay-id') !== undefined && $(this).text().indexOf(title) !== -1) {
+                    element.tabChange('bodyTab', $(this).attr('lay-id'));
+                    isActive = true;
+                }
+            });
+            
+            if(!isActive) {
+                element.tabAdd('bodyTab', {
+                    title: title + '<i class="layui-icon layui-icon-close layui-tab-close" onclick="closeTab(\'' + tabId + '\')"></i>',
+                    content: '<iframe src="' + url + '" frameborder="0" style="width:100%; height:100%;"></iframe>',
+                    id: tabId
+                });
+                element.tabChange('bodyTab', tabId);
+            }
+        }
+        
+        // 关闭Tab页
+        function closeTab(tabId) {
+            layui.element.tabDelete('bodyTab', tabId);
+            event.stopPropagation();
+        }
+        
+        // 退出登录
+        function logout() {
+            layui.layer.confirm('确定要退出登录吗？', {icon: 3, title:'提示'}, function(index){
+                window.location.href = '/logout/';
+                layui.layer.close(index);
+            });
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>
