@@ -90,7 +90,7 @@
         <!-- 头部 -->
         <div class="layui-header">
             <div class="layui-logo">仓库管理系统</div>
-            <a class="sidebar-toggle" onclick="toggleSidebar()">
+            <a class="sidebar-toggle" onclick="toggleSidebar()" aria-label="切换侧边栏" aria-expanded="true">
                 <i class="layui-icon layui-icon-shrink-right" id="toggleIcon"></i>
             </a>
             <ul class="layui-nav layui-layout-right">
@@ -221,15 +221,18 @@
         
         // 切换侧边栏折叠状态
         function toggleSidebar() {
-            var layout = document.querySelector('.layui-layout');
-            var icon = document.getElementById('toggleIcon');
+            var $layout = $('.layui-layout');
+            var $icon = $('#toggleIcon');
+            var $toggle = $('.sidebar-toggle');
             
-            if (layout.classList.contains('layui-side-shrink')) {
-                layout.classList.remove('layui-side-shrink');
-                icon.className = 'layui-icon layui-icon-shrink-right';
+            if ($layout.hasClass('layui-side-shrink')) {
+                $layout.removeClass('layui-side-shrink');
+                $icon.attr('class', 'layui-icon layui-icon-shrink-right');
+                $toggle.attr('aria-expanded', 'true');
             } else {
-                layout.classList.add('layui-side-shrink');
-                icon.className = 'layui-icon layui-icon-spread-left';
+                $layout.addClass('layui-side-shrink');
+                $icon.attr('class', 'layui-icon layui-icon-spread-left');
+                $toggle.attr('aria-expanded', 'false');
             }
         }
     </script>
