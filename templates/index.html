@@ -79,6 +79,9 @@
             cursor: pointer;
             color: #fff;
             line-height: 60px;
+            background: none;
+            border: none;
+            font-size: 16px;
         }
         .sidebar-toggle:hover {
             background-color: rgba(255,255,255,.05);
@@ -90,9 +93,9 @@
         <!-- 头部 -->
         <div class="layui-header">
             <div class="layui-logo">仓库管理系统</div>
-            <a class="sidebar-toggle" onclick="toggleSidebar()" aria-label="切换侧边栏" aria-expanded="true">
+            <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="切换侧边栏" aria-expanded="true" type="button">
                 <i class="layui-icon layui-icon-shrink-right" id="toggleIcon"></i>
-            </a>
+            </button>
             <ul class="layui-nav layui-layout-right">
                 <li class="layui-nav-item">
                     <a href="javascript:;">
