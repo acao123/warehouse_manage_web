@@ -52,6 +52,40 @@
             height: 100%;
             border: none;
         }
+        
+        /* 侧边栏折叠相关样式 */
+        .layui-side-shrink .layui-side {
+            width: 60px;
+        }
+        .layui-side-shrink .layui-side .layui-nav-tree .layui-nav-item > a > span,
+        .layui-side-shrink .layui-side .layui-nav-tree .layui-nav-child {
+            display: none;
+        }
+        .layui-side-shrink .layui-body {
+            left: 60px;
+        }
+        .layui-side-shrink .layui-footer {
+            left: 60px;
+        }
+        .layui-side-shrink .layui-side .layui-nav-item a .layui-icon {
+            font-size: 18px;
+            margin-right: 0;
+        }
+        
+        /* 折叠按钮样式 */
+        .sidebar-toggle {
+            display: inline-block;
+            padding: 0 15px;
+            cursor: pointer;
+            color: #fff;
+            line-height: 60px;
+            background: none;
+            border: none;
+            font-size: 16px;
+        }
+        .sidebar-toggle:hover {
+            background-color: rgba(255,255,255,.05);
+        }
     </style>
 </head>
 <body class="layui-layout-body">
@@ -59,6 +93,9 @@
         <!-- 头部 -->
         <div class="layui-header">
             <div class="layui-logo">仓库管理系统</div>
+            <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="切换侧边栏" aria-expanded="true" type="button">
+                <i class="layui-icon layui-icon-shrink-right" id="toggleIcon"></i>
+            </button>
             <ul class="layui-nav layui-layout-right">
                 <li class="layui-nav-item">
                     <a href="javascript:;">
@@ -81,7 +118,7 @@
                         {% if menu.children %}
                         <a href="javascript:;">
                             <i class="layui-icon layui-icon-app"></i>
-                            {{ menu.name }}
+                            <span>{{ menu.name }}</span>
                         </a>
                         <dl class="layui-nav-child">
                             {% for child in menu.children %}
@@ -95,7 +132,7 @@
                         {% else %}
                         <a href="javascript:;" onclick="addTab('{{ menu.name }}', '{{ menu.route }}')">
                             <i class="layui-icon layui-icon-app"></i>
-                            {{ menu.name }}
+                            <span>{{ menu.name }}</span>
                         </a>
                         {% endif %}
                     </li>
@@ -135,6 +172,7 @@
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/static/layui/layui/layui.js"></script>
     <script>
         layui.use(['element', 'layer'], function(){
@@ -184,7 +222,23 @@
                 layui.layer.close(index);
             });
         }
+        
+        // 切换侧边栏折叠状态
+        function toggleSidebar() {
+            var $layout = $('.layui-layout');
+            var $icon = $('#toggleIcon');
+            var $toggle = $('.sidebar-toggle');
+            
+            if ($layout.hasClass('layui-side-shrink')) {
+                $layout.removeClass('layui-side-shrink');
+                $icon.removeClass('layui-icon-spread-left').addClass('layui-icon-shrink-right');
+                $toggle.attr('aria-expanded', 'true');
+            } else {
+                $layout.addClass('layui-side-shrink');
+                $icon.removeClass('layui-icon-shrink-right').addClass('layui-icon-spread-left');
+                $toggle.attr('aria-expanded', 'false');
+            }
+        }
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </body>
 </html>
