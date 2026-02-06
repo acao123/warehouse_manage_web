@@ -231,11 +231,11 @@
             
             if ($layout.hasClass('layui-side-shrink')) {
                 $layout.removeClass('layui-side-shrink');
-                $icon.attr('class', 'layui-icon layui-icon-shrink-right');
+                $icon.removeClass('layui-icon-spread-left').addClass('layui-icon-shrink-right');
                 $toggle.attr('aria-expanded', 'true');
             } else {
                 $layout.addClass('layui-side-shrink');
-                $icon.attr('class', 'layui-icon layui-icon-spread-left');
+                $icon.removeClass('layui-icon-shrink-right').addClass('layui-icon-spread-left');
                 $toggle.attr('aria-expanded', 'false');
             }
         }
